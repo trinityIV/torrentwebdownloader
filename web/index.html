@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Torrent Web Downloader</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <canvas id="spiderweb"></canvas>
+    <div class="container">
+        <h1 class="title"><i class="fa-solid fa-spider"></i> Torrent Web Downloader</h1>
+        
+        <!-- Ajouter ce bouton d'arrêt du serveur -->
+        <div class="server-controls">
+            <button id="stopServerBtn" class="stop-btn">
+                <i class="fa-solid fa-power-off"></i> Arrêter le serveur
+            </button>
+        </div>
+        
+        <form id="addForm" enctype="multipart/form-data">
+            <div class="input-group">
+                <div class="input-label"><i class="fa-solid fa-magnet"></i> Lien Magnet</div>
+                <input type="text" id="magnet" placeholder="Collez un lien magnet ici...">
+            </div>
+            
+            <div class="separator">OU</div>
+            
+            <div class="input-group">
+                <div class="input-label"><i class="fa-solid fa-file"></i> Fichier Torrent</div>
+                <div class="file-input-container">
+                    <label for="torrentFile" class="file-btn">
+                        <i class="fa-solid fa-upload"></i> Sélectionner un fichier
+                    </label>
+                    <span id="selectedFileName" class="file-name">Aucun fichier sélectionné</span>
+                    <input type="file" id="torrentFile" accept=".torrent">
+                </div>
+            </div>
+            
+            <div class="input-group">
+                <div class="input-label"><i class="fa-solid fa-folder"></i> Dossier de destination</div>
+                <div class="file-input-container">
+                    <label for="folderSelect" class="file-btn" id="folderSelectBtn">
+                        <i class="fa-solid fa-folder-open"></i> Choisir un dossier
+                    </label>
+                    <span id="selectedFolderPath" class="file-name">Dossier par défaut</span>
+                    <input type="text" id="downloadPath" style="display:none;">
+                </div>
+            </div>
+            
+            <button type="submit" class="submit-btn">
+                <i class="fa-solid fa-download"></i> Ajouter le torrent
+            </button>
+        </form>
+        
+        <div class="torrents-section">
+            <h2 class="section-title"><i class="fa-solid fa-list"></i> Vos torrents</h2>
+            <div id="torrents"></div>
+        </div>
+    </div>
+    <script src="spiderweb.js"></script>
+    <script src="main.js"></script>
+    <script>
+        // Affichage du nom de fichier sélectionné
+        document.getElementById('torrentFile').addEventListener('change', function() {
+            const fileName = this.files.length > 0 ? this.files[0].name : 'Aucun fichier sélectionné';
+            document.getElementById('selectedFileName').textContent = fileName;
+        });
+        
+        // Simuler la sélection de dossier avec un prompt
+        document.getElementById('folderSelectBtn').addEventListener('click', function(e) {
+            e.preventDefault();
+            const path = prompt('Entrez le chemin du répertoire de téléchargement:');
+            if (path) {
+                document.getElementById('downloadPath').value = path;
+                document.getElementById('selectedFolderPath').textContent = path;
+            }
+        });
+        
+        // Ajouter ce code pour gérer l'arrêt du serveur
+        document.getElementById('stopServerBtn').addEventListener('click', async function() {
+            if (confirm('Êtes-vous sûr de vouloir arrêter le serveur ?')) {
+                try {
+                    const response = await fetch(`${API}/stop-server`, {
+                        method: 'POST'
+                    });
+                    const data = await response.json();
+                    if (data.success) {
+                        alert('Le serveur va s\'arrêter. Vous pourrez le redémarrer avec start_server.bat');
+                    }
+                } catch (error) {
+                    console.error('Erreur lors de l\'arrêt du serveur:', error);
+                    alert('Erreur lors de la tentative d\'arrêt du serveur. Vérifiez la console pour plus de détails.');
+                }
+            }
+        });
+    </script>
+</body>
+</html>
