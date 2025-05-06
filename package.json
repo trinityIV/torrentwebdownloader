@@ -1,0 +1,16 @@
+{
+  "name": "torrent-web-downloader",
+  "version": "1.0.0",
+  "description": "A web-based torrent downloader",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "author": "Your Name",
+  "license": "ISC",
+  "type": "module",
+  "dependencies": {
+    "express": "^4.17.1",
+    "webtorrent": "latest"
+  }
+}
